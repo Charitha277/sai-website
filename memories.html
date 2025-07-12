@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Our Memories 💞</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Pacifico', cursive;
+      background: #fff0f5;
+      text-align: center;
+      padding: 20px;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      color: #e91e63;
+      margin-bottom: 30px;
+    }
+
+    .slideshow-container {
+      position: relative;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .slide {
+      display: none;
+      width: 100%;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+
+    .slide.active {
+      display: block;
+    }
+
+    .back {
+      margin-top: 30px;
+      display: inline-block;
+      background: #ff69b4;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 1.2em;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="heartCanvas"></canvas>
+
+  <h1>📸 Our Beautiful Memories</h1>
+
+  <div class="slideshow-container">
+    <img src="image1.jpg" class="slide active" />
+    <img src="image2.jpg" class="slide" />
+    <img src="image3.jpg" class="slide" />
+     <img src="image4.jpg" class="slide" />
+      <img src="image5.jpg" class="slide" />
+  </div>
+
+  <a href="index.html" class="back">⬅️ Back to Message</a>
+
+  <script>
+    // Slideshow logic
+    const slides = document.querySelectorAll('.slide');
+    let index = 0;
+    setInterval(() => {
+      slides[index].classList.remove('active');
+      index = (index + 1) % slides.length;
+      slides[index].classList.add('active');
+    }, 2500);
+
+    // Heart animation
+    const canvas = document.getElementById('heartCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const hearts = [];
+
+    function createHeart() {
+      return {
+        x: Math.random() * canvas.width,
+        y: -20,
+        size: Math.random() * 20 + 10,
+        speed: Math.random() * 2 + 1,
+        opacity: Math.random() * 0.5 + 0.5
+      };
+    }
+
+    function drawHeart(h) {
+      ctx.save();
+      ctx.translate(h.x, h.y);
+      ctx.scale(h.size / 30, h.size / 30);
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.bezierCurveTo(0, -3, -5, -5, -7, -2);
+      ctx.bezierCurveTo(-10, 1, 0, 6, 0, 9);
+      ctx.bezierCurveTo(0, 6, 10, 1, 7, -2);
+      ctx.bezierCurveTo(5, -5, 0, -3, 0, 0);
+      ctx.closePath();
+      ctx.fillStyle = `rgba(255, 20, 147, ${h.opacity})`;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function updateHearts() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      while (hearts.length < 80) {
+        hearts.push(createHeart());
+      }
+
+      hearts.forEach((h, i) => {
+        h.y += h.speed;
+        drawHeart(h);
+        if (h.y > canvas.height) {
+          hearts[i] = createHeart();
+        }
+      });
+
+      requestAnimationFrame(updateHearts);
+    }
+
+    updateHearts();
+  </script>
+
+</body>
+</html>
